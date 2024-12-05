@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QVBoxLayout, QSlider, QLabel, QPushButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QVBoxLayout,QInputDialog, QSlider, QLabel, QPushButton
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QColor, QPen
 from PyQt5.QtCore import Qt, QRect
 import cv2
@@ -34,6 +34,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_19.clicked.connect(self.add_watermark)
         self.pushButton_15.clicked.connect(self.apply_hsl)
 
+        # 绑定文字按钮
+        self.pushButton_8.clicked.connect(self.add_text)
         # 绑定重置按钮
         self.reset_button.clicked.connect(self.reset_image)
 
@@ -121,7 +123,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.processed_image = cv2.warpAffine(self.current_image, rotation_matrix, (width, height))
         self.display_image(self.processed_image)
 
-    # 图像处理功能：亮度调整
+    # 亮度调整
     def adjust_brightness(self, value):
         if self.current_image is None:
             return
@@ -240,6 +242,52 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cv2.waitKey(20)
         cv2.destroyAllWindows()
         self.processed_image = cut
+        self.display_image(self.processed_image)
+
+    #添加文字
+
+    def add_text(self):
+        """添加文字到选定区域"""
+        if self.current_image is None:
+            return
+
+        # 用户框选区域
+        roi = cv2.selectROI(windowName="Select Text Area", img=self.current_image, showCrosshair=True, fromCenter=False)
+        x, y, w, h = roi
+
+        # 检查是否选择了有效区域
+        if roi == (0, 0, 0, 0):
+            cv2.destroyAllWindows()
+            return
+
+        # 弹出文本输入框
+        text, ok = QInputDialog.getText(self, "输入文字", "请输入要添加的文字：")
+        if not ok or not text:
+            cv2.waitKey(10)
+            cv2.destroyAllWindows()
+            return
+
+        # 在图像上绘制文字
+        self.processed_image = self.current_image.copy()
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = min(w / 200, h / 50)  # 动态调整字体大小
+        font_thickness = max(1, int(font_scale * 2))  # 动态调整字体粗细
+        text_size = cv2.getTextSize(text, font, font_scale, font_thickness)[0]
+
+        # 计算文字的左上角坐标，确保文字居中显示在选区
+        text_x = x + (w - text_size[0]) // 2
+        text_y = y + (h + text_size[1]) // 2
+
+        # 在选定区域绘制文字
+        cv2.putText(self.processed_image, text, (text_x, text_y), font, font_scale, (0, 255, 0), font_thickness,
+                    cv2.LINE_AA)
+
+        # 显示结果图像
+        cv2.imshow("Text Area", self.processed_image)
+        cv2.waitKey(10)
+        cv2.destroyAllWindows()
+
+        # 更新显示
         self.display_image(self.processed_image)
 
     # 美颜滤镜：为人脸图片添加美颜功能
