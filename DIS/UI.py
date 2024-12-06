@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1218, 941)
+        MainWindow.resize(1187, 901)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.formLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -172,7 +172,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setObjectName("pushButton_6")
         self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.pushButton_6)
         self.reset_button = QtWidgets.QPushButton(self.centralwidget)
-        self.reset_button.setGeometry(QtCore.QRect(950, 790, 100, 28))
+        self.reset_button.setGeometry(QtCore.QRect(970, 810, 120, 34))
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
         font.setPointSize(12)
@@ -180,9 +180,18 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.reset_button.setFont(font)
         self.reset_button.setObjectName("reset_button")
+        self.store_button = QtWidgets.QPushButton(self.centralwidget)
+        self.store_button.setGeometry(QtCore.QRect(970, 760, 120, 34))
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.store_button.setFont(font)
+        self.store_button.setObjectName("store_button")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1218, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1187, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -217,13 +226,4 @@ class Ui_MainWindow(object):
         self.pushButton_18.setText(_translate("MainWindow", "人脸美颜"))
         self.pushButton_6.setText(_translate("MainWindow", "旋转"))
         self.reset_button.setText(_translate("MainWindow", "重置"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+        self.store_button.setText(_translate("MainWindow", "保存"))

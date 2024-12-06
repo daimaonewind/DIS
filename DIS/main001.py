@@ -14,6 +14,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # 当前图像和处理后的图像
         self.current_image = None
+        self.original_image = None
         self.processed_image = None
         self.rotation_angle = 0  # 用于追踪当前的旋转角度
 
@@ -36,6 +37,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # 绑定文字按钮
         self.pushButton_8.clicked.connect(self.add_text)
+        # 绑定暂存按钮
+        self.store_button.clicked.connect(self.store_image)
         # 绑定重置按钮
         self.reset_button.clicked.connect(self.reset_image)
 
@@ -72,7 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.processed_image = self.current_image.copy()
             self.display_image(self.current_image)
 
-    #保存处理后的图片
+    #保存图片
     def save_image(self):
 
         if self.processed_image is None:
@@ -80,6 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         file_name, _ = QFileDialog.getSaveFileName(self, "保存图片", "", "Image Files (*.png *.jpg *.bmp *.jpeg)")
         if file_name:
             cv2.imwrite(file_name, self.processed_image)
+
     #在界面上展示图片
     def display_image(self, image):
         if image is None:
@@ -94,6 +98,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label.setPixmap(pixmap)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setScaledContents(False)  # 图像正常显示，而不是最大化
+
     #重置图像
     def reset_image(self):
         if self.original_image is not None:
@@ -123,9 +128,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.processed_image = cv2.warpAffine(self.current_image, rotation_matrix, (width, height))
         self.display_image(self.processed_image)
 
+    # 保存修改
+    def store_image(self):
+        if self.processed_image is not None:
+            self.current_image = self.processed_image
+            self.display_image(self.current_image)
+
     # 亮度调整
     def adjust_brightness(self, value):
-        if self.current_image is None:
+        if self.current_image is None :
             return
         self.processed_image = cv2.convertScaleAbs(self.current_image, alpha=1, beta=value)
         self.display_image(self.processed_image)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1218</width>
-    <height>941</height>
+    <width>1187</width>
+    <height>901</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -306,10 +306,10 @@
    <widget class="QPushButton" name="reset_button">
     <property name="geometry">
      <rect>
-      <x>950</x>
-      <y>790</y>
-      <width>100</width>
-      <height>28</height>
+      <x>970</x>
+      <y>810</y>
+      <width>120</width>
+      <height>34</height>
      </rect>
     </property>
     <property name="font">
@@ -324,14 +324,35 @@
      <string>重置</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="store_button">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>760</y>
+      <width>120</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>保存</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1218</width>
-     <height>26</height>
+     <width>1187</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
