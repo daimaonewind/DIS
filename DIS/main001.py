@@ -77,7 +77,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     #保存图片
     def save_image(self):
-
         if self.processed_image is None:
             return
         file_name, _ = QFileDialog.getSaveFileName(self, "保存图片", "", "Image Files (*.png *.jpg *.bmp *.jpeg)")
@@ -303,28 +302,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # 美颜滤镜：为人脸图片添加美颜功能
     def apply_beautification(self):
-
+        """为人脸图片添加美颜功能"""
         if self.current_image is None:
             return
-
         # 检查是否已经应用过美颜处理，防止重复处理
         if hasattr(self, 'beautified') and self.beautified:
-            return  # 如果已经处理过美颜，则不再处理
-
-        # 使用灰度图进行人脸检测
+                return  # 如果已经处理过美颜，则不再处理
+        # 转换为灰度图进行人脸检测
         gray_image = cv2.cvtColor(self.current_image, cv2.COLOR_BGR2GRAY)
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-        # 对每一张检测到的人脸进行美颜处理
+        # 创建结果图像
+        result_image = self.current_image.copy()
+
         for (x, y, w, h) in faces:
+            # 获取人脸区域
             face = self.current_image[y:y + h, x:x + w]
 
-            # 1. 磨皮：对皮肤区域使用双边滤波
-            smoothed_face = cv2.bilateralFilter(face, d=9, sigmaColor=75, sigmaSpace=75)
+            # 转换为 YCrCb 色彩空间以检测肤色区域
+            ycrcb = cv2.cvtColor(face, cv2.COLOR_BGR2YCrCb)
+            mask = cv2.inRange(ycrcb, (0, 133, 77), (255, 173, 127))  # 肤色范围
 
-            # 将处理过的人脸区域更新到原图
-            self.current_image[y:y + h, x:x + w] = smoothed_face
+            # 使用双边滤波对肤色区域进行磨皮
+            smoothed_face = cv2.bilateralFilter(face, d=9, sigmaColor=20, sigmaSpace=15)
+            face[mask > 0] = smoothed_face[mask > 0]
+
+            # 更新结果图像中的人脸区域
+            result_image[y:y + h, x:x + w] = face
+
+        # 更新处理后的图像
+        self.processed_image = result_image
+        self.display_image(self.processed_image)
 
         # 标记美颜已经应用
         self.processed_image = self.current_image
